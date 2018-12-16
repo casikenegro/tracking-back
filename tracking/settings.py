@@ -42,9 +42,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'oauth2_provider',
-    'allauth',
     'social_django',
     'rest_framework_social_oauth2',
+    'django_registration'
 ]
 
 SITE_ID = 1
@@ -150,3 +150,10 @@ DRFSO2_PROPRIETARY_BACKEND_NAME = 'Google'
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '956860202240-jn181vgfrd5mr6b77nuj682oe8gsi1m2.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '61j3hu0CKofg8joNvcgdGNx9'
 LOGIN_REDIRECT_URL = '/'
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'heiner.enis@gmail.com'
+EMAIL_HOST_PASSWORD = '27.729.230.a'
+EMAIL_USE_TLS = True
+
+ACCOUNT_ACTIVATION_DAYS = 7
