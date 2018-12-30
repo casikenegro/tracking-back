@@ -1,9 +1,7 @@
-from django.urls import path
-from .views import ActivationUserView
-from django_registration.backends.activation.views import RegistrationView
-
+from django.urls import path, include
+from django.views.decorators.csrf import csrf_exempt
 
 urlpatterns = [
-    path(r'registration/$', RegistrationView, name = 'registration'),
-    path(r'activation/$', ActivationUserView, name = 'activation')
+   path(r'registration/', include('rest_auth.registration.urls')),
+   path(r'', include('rest_auth.urls'))
 ]

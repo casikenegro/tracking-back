@@ -44,10 +44,21 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'social_django',
     'rest_framework_social_oauth2',
-    'django_registration'
+    'allauth',
+    'allauth.account',
+    'rest_auth.registration'
 ]
 
+ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE=True
+ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE=False
+
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_AUTHENTICATION_METHOD ='email'
+ACCOUNT_EMAIL_REQUIRED = True
+
 SITE_ID = 1
+ACCOUNT_ACTIVATION_DAYS = 7
+
 REST_FRAMEWORK  = { 
     ' DEFAULT_AUTHENTICATION_CLASSES ' : ( 
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',   # django-oauth- kit de herramientas> = 1.0.0
@@ -61,6 +72,7 @@ AUTHENTICATION_BACKENDS = (
     #facebook
     'rest_framework_social_oauth2.backends.DjangoOAuth2',
     'django.contrib.auth.backends.ModelBackend',
+    'authentication.backend.authentication.EmailAuthenticationBackend'
 )
 
 MIDDLEWARE = [
@@ -149,11 +161,13 @@ DRFSO2_PROPRIETARY_BACKEND_NAME = 'Google'
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '956860202240-jn181vgfrd5mr6b77nuj682oe8gsi1m2.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '61j3hu0CKofg8joNvcgdGNx9'
-LOGIN_REDIRECT_URL = '/'
 
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'heiner.enis@gmail.com'
-EMAIL_HOST_PASSWORD = '27.729.230.a'
+EMAIL_HOST_USER = 'adrian2000.alfonso@gmail.com'
+EMAIL_HOST_PASSWORD = '27729223'
 EMAIL_USE_TLS = True
 
-ACCOUNT_ACTIVATION_DAYS = 7
+
+"""REST_AUTH_SERIALIZERS = {
+    'LOGIN_SERIALIZER': 'authentication.serializer.LoginSerializer',
+}"""
