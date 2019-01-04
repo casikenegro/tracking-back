@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'authentication',
     'rest_framework',
     'rest_framework.authtoken',
     'oauth2_provider',
@@ -49,12 +50,11 @@ INSTALLED_APPS = [
     'rest_auth.registration'
 ]
 
-ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE=True
-ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE=False
 
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_AUTHENTICATION_METHOD ='email'
 ACCOUNT_EMAIL_REQUIRED = True
+
 
 SITE_ID = 1
 ACCOUNT_ACTIVATION_DAYS = 7
@@ -72,7 +72,7 @@ AUTHENTICATION_BACKENDS = (
     #facebook
     'rest_framework_social_oauth2.backends.DjangoOAuth2',
     'django.contrib.auth.backends.ModelBackend',
-    'authentication.backend.authentication.EmailAuthenticationBackend'
+    'allauth.account.auth_backends.AuthenticationBackend'
 )
 
 MIDDLEWARE = [
@@ -162,11 +162,18 @@ DRFSO2_PROPRIETARY_BACKEND_NAME = 'Google'
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '956860202240-jn181vgfrd5mr6b77nuj682oe8gsi1m2.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '61j3hu0CKofg8joNvcgdGNx9'
 
+
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = 'http://localhost:3000'
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = 'http://localhost:3000/accounts'
+
+
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'adrian2000.alfonso@gmail.com'
 EMAIL_HOST_PASSWORD = '27729223'
 EMAIL_USE_TLS = True
-
+EMAIL_PORT = 587
+ACCOUNT_EMAIL_CONFIRMATION_HMAC = True
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 
 """REST_AUTH_SERIALIZERS = {
     'LOGIN_SERIALIZER': 'authentication.serializer.LoginSerializer',
