@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'rest_framework_social_oauth2',
     'allauth',
     'allauth.account',
-    'rest_auth.registration'
+    'rest_auth.registration',
+    'devices'
 ]
 
 
