@@ -1,45 +1,167 @@
-from django.shortcuts import render
-
-# Create your views here.
-
 from .models import Device, Position
 from .serializers import DeviceSerializer, PositionSerializer
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, views
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
+from rest_framework.views import APIView 
+import re
+
+
+def isValidData(data, regex):
+
+    pattern = re.compile(regex)
+
+    match = pattern.search(data)
+       
+    return match
 
 class DeviceViewSet(viewsets.ModelViewSet):
 
     permission_classes = ( IsAuthenticated, )
     serializer_class = DeviceSerializer
 
+    lookup_url_kwarg = 'serial'
+    lookup_field = 'serial'
+
     def get_queryset(self):
 
-        if self.request.user.is_superuser:
-            return  Device.objects.filter(user = self.request.user)
+        user =  self.request.user
+
+        if not user.is_superuser:
+            return Device.objects.filter(user = user)
 
         return Device.objects.all()
 
-    @action(detail = False, methods = ['get',])
+    def getPartsDataDevice(self, value):
+
+        dict_device = dict(
+            serial = value,
+            typee = value[0]
+        )
+
+        return dict_device
+
+    def create(self, request):
+
+        user = request.user
+        serial = request.data.get('serial', None)
+
+        regex = '([SGM][0-9]{3})'
+
+        match = self.isValidData(serial, regex)
+        if match:
+            if not user.is_superuser:
+
+                try:
+                    device = Device.objects.get(serial = serial)
+
+                    if not device.user:
+
+                        device.user = user
+
+                        return Response(status = status.HTTP_200_OK)
+
+                    message = "El dispositivo ya ha sido asignado a otro usuario"
+
+                    return Response(status = status.HTTP_403_FORBIDDEN)
+
+                except Exception as e:
+
+                    message = "El dispositivo no se encuentra registrado para su uso"
+
+                    return Response(message = message, status = status.HTTP_403_FORBIDDEN)
+
+            parts = self.getPartsDataDevice(match.group(0))
+
+            serializer = DeviceSerializer(data = parts)
+
+            if serializer.is_valid():
+
+                serializer.save()
+
+                return Response(status = status.HTTP_201_CREATED)
+
+            message = 'El dispositivo que ha introducido ya existe'
+
+            return Response(message = message, status = status.HTTP_400_BAD_REQUEST)
+
+
+
+           
+    @action(detail = True, methods = ['get'])
     def positions(self, *args, **kwargs):
-        device_positions = Position.objects.filter(device = kwargs.get('serial', ''))
-        serializer = PositionSerializer(device_positions)
 
-        
+        device = kwargs.get('serial', '')
+
+        if device :
+            device_positions = Position.objects.filter(device = device)
+            serializer = PositionSerializer(device_positions, many = True)
+
+            return Response(serializer.data)
+
+        message = "No se ha proporcionado un serial valido de dispositivo"
+
+        return Response(message = message, status = status.HTTP_404_NOT_FOUND)
 
 
 
+class PositionView(APIView):
 
-class PositionViewSet(viewsets.ModelViewSet):
+    queryset = Position.objects.all()
 
-    permission_classes = ( IsAuthenticated, )
-    serializer_class = PositionSerializer
-    
-    def get_queryset(self):
+    def obtainPartsDataPosition(self, values):
 
-        if self.request.user.is_superuser:
-            return Position.objects.all()
-        
-        return Position.objects.filter(user = self.request.user)
-    
+
+        dict_parts = dict(
+
+            serial    =  values[0],
+            latitude  =  values[1],
+            longitude =  values[2],
+            c         =  values[3]
+        )
+
+        return dict_parts
+
+    def savePositionDevice(self, **kwargs):
+
+        serial = kwargs.get('serial', None)
+
+        device = Device.objects.get(serial = serial)
+
+        latitude = kwargs.get('latitude', None)
+        longitude = kwargs.get('longitude', None)
+        c = kwargs.get('c', None)
+
+        position = Position.objects.create(
+            device = device,
+            latitude = latitude.split('-')[1],
+            longitude = longitude.split('-')[1],
+            c = c.split('-')[1]
+        )
+
+        return device
+
+
+    def get(self, request):
+
+        data = request.query_params.get('data', None)
+
+        if data:
+
+            regex = '([SGM][0-9]{3})(A-?[0-9]+[.][0-9]+)(B-?[0-9]+[.][0-9]+)(C-?[0-9]+)'
+
+            match = isValidData(data, regex)
+            
+            if match :
+                parts = self.obtainPartsDataPosition(match.groups())
+
+                device = self.savePositionDevice(**parts)
+
+                #if device.user: mandar notificacion al cliente
+
+                return Response(status = status.HTTP_200_OK)
+
+        return Response(status = status.HTTP_400_BAD_REQUEST)
+
+
