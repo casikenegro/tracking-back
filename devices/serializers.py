@@ -11,9 +11,7 @@ class DeviceSerializer(serializers.ModelSerializer):
 	class Meta:
 		fields = ('serial', 'typee', 'date_register', 'user')
 		model = Device
-
-		return Device(serial = serial_device, typee = type_device )
-
+		
 class PositionSerializer(serializers.ModelSerializer):
 
     class Meta:

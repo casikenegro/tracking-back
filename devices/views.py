@@ -49,7 +49,7 @@ class DeviceViewSet(viewsets.ModelViewSet):
 
         regex = '([SGM][0-9]{3})'
 
-        match = self.isValidData(serial, regex)
+        match = isValidData(serial, regex)
         if match:
             if not user.is_superuser:
 
@@ -70,7 +70,7 @@ class DeviceViewSet(viewsets.ModelViewSet):
 
                     message = "El dispositivo no se encuentra registrado para su uso"
 
-                    return Response(message = message, status = status.HTTP_403_FORBIDDEN)
+                    return Response(message, status = status.HTTP_403_FORBIDDEN)
 
             parts = self.getPartsDataDevice(match.group(0))
 
@@ -84,7 +84,7 @@ class DeviceViewSet(viewsets.ModelViewSet):
 
             message = 'El dispositivo que ha introducido ya existe'
 
-            return Response(message = message, status = status.HTTP_400_BAD_REQUEST)
+            return Response(message, status = status.HTTP_400_BAD_REQUEST)
 
 
 
