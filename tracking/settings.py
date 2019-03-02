@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'rest_auth.registration',
-    'devices'
+    'devices',
+    'shop',
 ]
 
 
@@ -176,6 +177,4 @@ EMAIL_PORT = 587
 ACCOUNT_EMAIL_CONFIRMATION_HMAC = True
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 
-"""REST_AUTH_SERIALIZERS = {
-    'LOGIN_SERIALIZER': 'authentication.serializer.LoginSerializer',
-}"""
+DEFAULT_IDENTIFIER_SHOP = 'DEFAULT'

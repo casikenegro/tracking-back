@@ -26,8 +26,9 @@ class DeviceViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
 
-        user =  self.request.user
 
+        user =  self.request.user
+            
         if not user.is_superuser:
             return Device.objects.filter(user = user)
 
@@ -88,14 +89,29 @@ class DeviceViewSet(viewsets.ModelViewSet):
 
 
 
+    def isValidRange(self, init, final):
+        return init and final
            
     @action(detail = True, methods = ['get'])
     def positions(self, *args, **kwargs):
+        
 
-        device = kwargs.get('serial', '')
+        filter_init = self.request.query_params.get('init', None)
+        filter_final = self.request.query_params.get('final', None)
 
-        if device :
-            device_positions = Position.objects.filter(device = device)
+        valid_range = False
+
+        params_to_found = dict(
+            device = kwargs.get('serial', '')
+        )
+
+        if self.isValidRange(filter_init, filter_final):
+            valid_range = True
+            params_to_found['init'] = filter_init
+            params_to_found['final'] = filter_final
+
+        if params_to_found['device']:
+            device_positions = Position.positions.getPositionsForRangeDate(**params_to_found, byRange = valid_range)
             serializer = PositionSerializer(device_positions, many = True)
 
             return Response(serializer.data)

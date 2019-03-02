@@ -12,6 +12,24 @@ status = (
     ('I', 'Inabilitado'),
 )
 
+class PositionsRangeDateManager(models.Manager):
+    
+    def isValidRange(self, init, final):
+        return init and final
+
+    def getPositionsForRangeDate(self, device, init = None, final = None, byRange = False):
+        
+        if byRange: 
+            from django.db.models import Q
+            from datetime import datetime
+            
+            inf = datetime.strptime(init, "%Y/%m/%d %H:%m:%s") 
+            sup = datetime.strptime(final, "%Y/%m/%d %H:%m:%s")
+            
+            return self.filter(Q(device =  device) & Q(date_register__gt = inf) & Q(date_register__lte = sup))
+        
+        return self.filter(device = device)
+
 
 # Create your models here.
 
@@ -30,3 +48,6 @@ class Position(models.Model):
     c = models.IntegerField(verbose_name = "C")
     date_register = models.DateField(verbose_name = 'Fecha de registro', auto_now_add = True)
     device = models.ForeignKey(Device, verbose_name = "", on_delete  = models.CASCADE, blank = True, null = True)
+
+    objects = models.Manager()
+    positions = PositionsRangeDateManager()
