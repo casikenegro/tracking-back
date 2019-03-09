@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action, api_view
 from rest_framework.views import APIView 
 import re
-
+from datetime import datetime
 
 def isValidData(data, regex):
 
@@ -38,7 +38,9 @@ class DeviceViewSet(viewsets.ModelViewSet):
 
         dict_device = dict(
             serial = value,
-            typee = value[0]
+            type = value[0],
+            status = 'H',
+            date = datetime.now()
         )
 
         return dict_device
@@ -51,6 +53,7 @@ class DeviceViewSet(viewsets.ModelViewSet):
         regex = '([SGM][0-9]{3})'
 
         match = isValidData(serial, regex)
+
         if match:
             if not user.is_superuser:
 
@@ -61,7 +64,9 @@ class DeviceViewSet(viewsets.ModelViewSet):
 
                         device.user = user
 
-                        return Response(status = status.HTTP_200_OK)
+                        serializer = DeviceSerializer(device)
+
+                        return Response(device, status = status.HTTP_200_OK)
 
                     message = "El dispositivo ya ha sido asignado a otro usuario"
 
