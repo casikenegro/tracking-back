@@ -38,9 +38,9 @@ class DeviceViewSet(viewsets.ModelViewSet):
 
         dict_device = dict(
             serial = value,
-            type = value[0],
+            typee = value[0],
             status = 'H',
-            date = datetime.now()
+            date_register = datetime.now()
         )
 
         return dict_device
@@ -59,14 +59,17 @@ class DeviceViewSet(viewsets.ModelViewSet):
 
                 try:
                     device = Device.objects.get(serial = serial)
-
+                    
                     if not device.user:
-
+               
                         device.user = user
+                        device.status = 'H'
 
+                        device.save()
+                        
                         serializer = DeviceSerializer(device)
-
-                        return Response(device, status = status.HTTP_200_OK)
+                        
+                        return Response(serializer.data, status = status.HTTP_200_OK)
 
                     message = "El dispositivo ya ha sido asignado a otro usuario"
 
@@ -88,9 +91,9 @@ class DeviceViewSet(viewsets.ModelViewSet):
 
                 return Response(status = status.HTTP_201_CREATED)
 
-            message = 'El dispositivo que ha introducido ya existe'
+        message = 'El dispositivo que ha introducido ya existe'
 
-            return Response(message, status = status.HTTP_400_BAD_REQUEST)
+        return Response(message, status = status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -103,12 +106,15 @@ class DeviceViewSet(viewsets.ModelViewSet):
 
         filter_init = self.request.query_params.get('init', None)
         filter_final = self.request.query_params.get('final', None)
-
+        last = bool(self.request.query_params.get('last', None))
         valid_range = False
 
         params_to_found = dict(
             device = kwargs.get('serial', '')
         )
+
+        if last:
+            params_to_found['last'] = last
 
         if self.isValidRange(filter_init, filter_final):
             valid_range = True
@@ -117,7 +123,15 @@ class DeviceViewSet(viewsets.ModelViewSet):
 
         if params_to_found['device']:
             device_positions = Position.positions.getPositionsForRangeDate(**params_to_found, byRange = valid_range)
-            serializer = PositionSerializer(device_positions, many = True)
+
+            if filter_init and filter_final and not last:
+                serializer = PositionSerializer(device_positions, many = True)
+            
+            elif not filter_init and not filter_final and last:
+                serializer = PositionSerializer(device_positions)
+
+            else:
+                return Response("Los parametros de consulta no concuerdan")
 
             return Response(serializer.data)
 
@@ -133,13 +147,12 @@ class PositionView(APIView):
 
     def obtainPartsDataPosition(self, values):
 
-
         dict_parts = dict(
 
             serial    =  values[0],
-            latitude  =  values[1],
-            longitude =  values[2],
-            c         =  values[3]
+            latitude  =  float(values[1]) + float(values[2]),
+            longitude =  float(values[3]) + float(values[4]),
+            c         =  float(values[5]) + float(values[6])
         )
 
         return dict_parts
@@ -150,15 +163,9 @@ class PositionView(APIView):
 
         device = Device.objects.get(serial = serial)
 
-        latitude = kwargs.get('latitude', None)
-        longitude = kwargs.get('longitude', None)
-        c = kwargs.get('c', None)
-
         position = Position.objects.create(
             device = device,
-            latitude = latitude.split('-')[1],
-            longitude = longitude.split('-')[1],
-            c = c.split('-')[1]
+            **kwargs
         )
 
         return device
@@ -170,7 +177,7 @@ class PositionView(APIView):
 
         if data:
 
-            regex = '([SGM][0-9]{3})(A-?[0-9]+[.][0-9]+)(B-?[0-9]+[.][0-9]+)(C-?[0-9]+)'
+            regex = '([SGM][0-9]{3})([0-9]+[.][0-9]+)-?([0-9]+[.][0-9]+)([0-9]+)-?([0-9]+[.][0-9]+)([0-9]+[.][0-9]+)-?([0-9]+[.][0-9]+)'
 
             match = isValidData(data, regex)
             

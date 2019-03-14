@@ -6,4 +6,3 @@ class userSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'email', 'is_superuser')
-        lookup_field = 'email'

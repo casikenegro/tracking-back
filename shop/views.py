@@ -9,8 +9,7 @@ from tracking.settings import DEFAULT_IDENTIFIER_SHOP
 
 class LinkShopView(generics.ListCreateAPIView,
                    generics.UpdateAPIView,
-                   generics.GenericAPIView,
-                   views.APIView):
+                   generics.GenericAPIView):
 
     serializer_class = LinkShopSerializer
     permission_classes = [permissions.IsAdminUser, ]
@@ -32,7 +31,7 @@ class LinkShopView(generics.ListCreateAPIView,
     def create(self, request):
         
         data = request.data
-
+        print(data)
         link = LinkShop.objects.all()
             
         if link.exists():
@@ -45,7 +44,7 @@ class LinkShopView(generics.ListCreateAPIView,
         return Response(message, status = status.HTTP_205_RESET_CONTENT)
     
     def update(self, request, **link):
-        
+        print(link)
         serializer = self.get_serializer_class()
         
         link_shop = LinkShop.objects.get(key = DEFAULT_IDENTIFIER_SHOP)
@@ -58,10 +57,6 @@ class LinkShopView(generics.ListCreateAPIView,
         message = "Link actualizado"
 
         return Response(message, status = status.HTTP_200_OK)
-        
-        message = "no se pudo actualizar el link de la tienda"
-
-        return Response(message, status = status.HTTP_400_BAD_REQUEST)     
     
                       
     

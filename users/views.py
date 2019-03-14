@@ -1,16 +1,18 @@
 from django.shortcuts import render
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, generics
 
 from .serializers import userSerializer
 from django.contrib.auth.models import User
 
 # Create your views here.
 
-class UsersRolesViewSet(viewsets.ModelViewSet):
+class UsersRolesView(generics.RetrieveAPIView):
 
     serializer_class = userSerializer
     permission_classes = [permissions.IsAuthenticated]
-    queryset = User.objects.all()
 
-    lookup_url_kwarg = 'email'
-    lookup_field = 'email'
+    def get_object(self):
+        return self.request.user
+    
+
+    

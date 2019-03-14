@@ -17,17 +17,26 @@ class PositionsRangeDateManager(models.Manager):
     def isValidRange(self, init, final):
         return init and final
 
-    def getPositionsForRangeDate(self, device, init = None, final = None, byRange = False):
+    def getPositionsForRangeDate(self, device, init = None, final = None, last = None, byRange = False):
         
         if byRange: 
             from django.db.models import Q
             from datetime import datetime
             
-            inf = datetime.strptime(init, "%Y/%m/%d %H:%m:%s") 
-            sup = datetime.strptime(final, "%Y/%m/%d %H:%m:%s")
+            inf = datetime.strptime(init, "%Y/%m/%d %H:%M:%S") 
+            sup = datetime.strptime(final, "%Y/%m/%d %H:%M:%S")
             
             return self.filter(Q(device =  device) & Q(date_register__gt = inf) & Q(date_register__lte = sup))
         
+        devices = self.filter(device = device)
+
+        if last:
+
+            list_devices = list(devices)
+            last_devices = list_devices[-1]
+
+            return last_devices
+
         return self.filter(device = device)
 
 
