@@ -40,7 +40,6 @@ class DeviceViewSet(viewsets.ModelViewSet):
             serial = value,
             typee = value[0],
             status = 'H',
-            date_register = datetime.now()
         )
 
         return dict_device
@@ -49,14 +48,14 @@ class DeviceViewSet(viewsets.ModelViewSet):
 
         user = request.user
         serial = request.data.get('serial', None)
-
+        
         regex = '([SGM][0-9]{3})'
 
         match = isValidData(serial, regex)
 
         if match:
             if not user.is_superuser:
-
+               
                 try:
                     device = Device.objects.get(serial = serial)
                     
@@ -82,15 +81,14 @@ class DeviceViewSet(viewsets.ModelViewSet):
                     return Response(message, status = status.HTTP_403_FORBIDDEN)
 
             parts = self.getPartsDataDevice(match.group(0))
-
+           
             serializer = DeviceSerializer(data = parts)
-
+            
             if serializer.is_valid():
-
                 serializer.save()
 
-                return Response(status = status.HTTP_201_CREATED)
-
+                return Response(serializer.data, status = status.HTTP_201_CREATED)
+            
         message = 'El dispositivo que ha introducido ya existe'
 
         return Response(message, status = status.HTTP_400_BAD_REQUEST)
@@ -122,18 +120,21 @@ class DeviceViewSet(viewsets.ModelViewSet):
             params_to_found['final'] = filter_final
 
         if params_to_found['device']:
-            device_positions = Position.positions.getPositionsForRangeDate(**params_to_found, byRange = valid_range)
-
-            if filter_init and filter_final and not last:
-                serializer = PositionSerializer(device_positions, many = True)
             
-            elif not filter_init and not filter_final and last:
-                serializer = PositionSerializer(device_positions)
+            device_positions = Position.positions.getPositionsForRangeDate(**params_to_found, byRange = valid_range)
+            
+            if device_positions:
 
-            else:
-                return Response("Los parametros de consulta no concuerdan")
+                if filter_init and filter_final and not last:
+                    serializer = PositionSerializer(device_positions, many = True)
+                
+                elif not filter_init and not filter_final and last:
+                    serializer = PositionSerializer(device_positions)
 
-            return Response(serializer.data)
+                else:
+                    return Response("Los parametros de consulta no concuerdan")
+
+                return Response(serializer.data)
 
         message = "No se ha proporcionado un serial valido de dispositivo"
 
@@ -162,12 +163,14 @@ class PositionView(APIView):
         serial = kwargs.get('serial', None)
 
         device = Device.objects.get(serial = serial)
+        
+        del kwargs['serial']
 
         position = Position.objects.create(
             device = device,
             **kwargs
         )
-
+        
         return device
 
 

@@ -5,11 +5,9 @@ from .validators import correctness_struct_serial
 import re
 
 class DeviceSerializer(serializers.ModelSerializer):
-
-	serial = serializers.CharField(max_length = 10, validators = [correctness_struct_serial, UniqueValidator(Device.objects.all())])
-
-	date_register = serializers.DateField(format = '%Y/%m/%d')
 	
+	date_register = serializers.DateTimeField(format = '%m/%d/%Y %H:%M', required = False)
+
 	class Meta:
 		fields = ('serial', 'typee', 'date_register', 'user', 'status')
 		model = Device
@@ -17,7 +15,10 @@ class DeviceSerializer(serializers.ModelSerializer):
 		
 class PositionSerializer(serializers.ModelSerializer):
 
-    class Meta:
-        fields = ('device', 'latitude', 'longitude', 'c', 'date_register')
-        model = Position
+	date_register = serializers.DateTimeField(format = '%m/%d/%Y %H:%M', required = False)
+
+	class Meta:
+
+		fields = ('device', 'latitude', 'longitude', 'c', 'date_register')
+		model = Position
 

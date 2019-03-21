@@ -30,24 +30,28 @@ class PositionsRangeDateManager(models.Manager):
         
         devices = self.filter(device = device)
 
+        if not devices.exists():
+            return None
+            
         if last:
-
+            
             list_devices = list(devices)
+            
             last_devices = list_devices[-1]
 
             return last_devices
 
-        return self.filter(device = device)
+        return devices
 
 
 # Create your models here.
 
 class Device(models.Model):
-    
-    serial = models.CharField(verbose_name = 'Serial', max_length = 10, primary_key = True, validators = [])
+
+    serial = models.CharField(verbose_name = 'Serial', max_length = 10, primary_key = True)
     typee = models.CharField(verbose_name = 'Tipo de dispositivo', max_length = 1, choices = type_devices)
     status = models.CharField(verbose_name = 'Estado', max_length = 15, choices = status, default = 'I')
-    date_register = models.DateField(verbose_name = 'Fecha de registro', auto_now_add =  True)
+    date_register = models.DateTimeField(verbose_name = 'Fecha de registro', auto_now = True, blank = True)
     user = models.ForeignKey(User, verbose_name = "Usuario", on_delete = models.CASCADE, null = True, blank = True)
 
 class Position(models.Model):
@@ -55,7 +59,7 @@ class Position(models.Model):
     latitude = models.FloatField(verbose_name = 'Latitud')
     longitude = models.FloatField(verbose_name = 'Longitud')
     c = models.IntegerField(verbose_name = "C")
-    date_register = models.DateField(verbose_name = 'Fecha de registro', auto_now_add = True)
+    date_register = models.DateTimeField(verbose_name = 'Fecha de registro', auto_now_add = True)
     device = models.ForeignKey(Device, verbose_name = "", on_delete  = models.CASCADE, blank = True, null = True)
 
     objects = models.Manager()
