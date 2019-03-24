@@ -6,5 +6,5 @@ router = routers.SimpleRouter()
 
 
 urlpatterns = [
-    path(r'user/', UsersRolesView.as_view()),
+    path(r'user', UsersRolesView.as_view()),
 ]
