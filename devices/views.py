@@ -131,6 +131,9 @@ class DeviceViewSet(viewsets.ModelViewSet):
                 elif not filter_init and not filter_final and last:
                     serializer = PositionSerializer(device_positions)
 
+                elif not filter_init and not filter_final and not last:
+                    positions = Position.objects.filter(device = params_to_found['device'])
+                    serializer = PositionSerializer(positions, many = True)
                 else:
                     return Response("Los parametros de consulta no concuerdan")
 
@@ -180,7 +183,7 @@ class PositionView(APIView):
 
         if data:
 
-            regex = '([SGM][0-9]{3})([0-9]+[.][0-9]+)-?([0-9]+[.][0-9]+)([0-9]+[.][0-9]+)-?([0-9]+[.][0-9]+)([0-9]+[.][0-9]+)-?([0-9]{4})'
+            regex = '([SGM][0-9]{3})(-?[0-9]+[.][0-9]+)-?([0-9]+[.][0-9]+)(-?[0-9]+[.][0-9]+)-?([0-9]+[.][0-9]+)(-?[0-9]+[.][0-9]+)-?([0-9]{4})'
 
             match = isValidData(data, regex)
             

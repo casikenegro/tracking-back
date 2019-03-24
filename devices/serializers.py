@@ -6,7 +6,7 @@ import re
 
 class DeviceSerializer(serializers.ModelSerializer):
 	
-	date_register = serializers.DateTimeField(format = '%m/%d/%Y %H:%M', required = False)
+	date_register = serializers.DateTimeField(format = '%d/%m/%Y %H:%M', required = False)
 
 	class Meta:
 		fields = ('serial', 'typee', 'date_register', 'user', 'status')
@@ -15,7 +15,7 @@ class DeviceSerializer(serializers.ModelSerializer):
 		
 class PositionSerializer(serializers.ModelSerializer):
 
-	date_register = serializers.DateTimeField(format = '%m/%d/%Y %H:%M', required = False)
+	date_register = serializers.DateTimeField(format = '%d/%m/%Y %H:%M', required = False)
 
 	class Meta:
 

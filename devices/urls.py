@@ -3,7 +3,7 @@ from .views import DeviceViewSet, PositionView
 from django.urls import path, include
 
 
-router =  routers.SimpleRouter()
+router =  routers.SimpleRouter(trailing_slash = False)
 
 router.register(r'devices', DeviceViewSet, basename = 'device')
 

@@ -23,10 +23,10 @@ class PositionsRangeDateManager(models.Manager):
             from django.db.models import Q
             from datetime import datetime
             
-            inf = datetime.strptime(init, "%Y/%m/%d %H:%M:%S") 
-            sup = datetime.strptime(final, "%Y/%m/%d %H:%M:%S")
+            inf = datetime.strptime(init, "%d/%m/%Y %H:%M") 
+            sup = datetime.strptime(final, "%d/%m/%Y %H:%M")
             
-            return self.filter(Q(device =  device) & Q(date_register__gt = inf) & Q(date_register__lte = sup))
+            return self.filter(Q(device =  device) & Q(date_register__gte = inf) & Q(date_register__lte = sup))
         
         devices = self.filter(device = device)
 
