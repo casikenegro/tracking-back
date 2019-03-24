@@ -68,7 +68,6 @@ REST_FRAMEWORK  = {
         'rest_framework_social_oauth2.authentication.SocialAuthentication',
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
            # django-oauth- kit de herramientas> = 1.0.0
     ), 
 }
@@ -183,8 +182,8 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '210792263208-5ph8ka5gth3dlh5bakt27c8mk3vusdqv.a
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'Kq8DDXXvx24t54SEmqubgFJQ'
 
 
-ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = 'http://heiner.pythonanywhere.com'
-ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = 'http://heiner.pythonanywhere.com/accounts'
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = 'https://heiner.pythonanywhere.com'
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = 'https://heiner.pythonanywhere.com/accounts'
 
 
 EMAIL_HOST = 'smtp.gmail.com'
