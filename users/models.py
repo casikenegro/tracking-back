@@ -9,7 +9,7 @@ def upload_image_avatar(instance, filename):
 
 class ImageUser(models.Model):
 
-    user = models.OneToOneField(User, verbose_name = "Usuario", on_delete = models.CASCADE)
+    user = models.OneToOneField(User, verbose_name = "Usuario", related_name = 'imageUrl', on_delete = models.CASCADE)
 
     image = models.ImageField(verbose_name = 'Imagen de perfil',
         upload_to = upload_image_avatar,

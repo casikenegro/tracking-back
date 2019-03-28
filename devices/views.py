@@ -39,7 +39,7 @@ class DeviceViewSet(viewsets.ModelViewSet):
         dict_device = dict(
             serial = value,
             typee = value[0],
-            status = 'H',
+            status = 'I',
         )
 
         return dict_device
