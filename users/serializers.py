@@ -22,13 +22,17 @@ class userSerializer(serializers.ModelSerializer):
             image = obj.imageUrl.image.url
         except Exception:
             image = None
+
+
         return {
-            'username' : obj.username,
+            'username': obj.username,
             'email' : obj.email,
             'is_superuser' : obj.is_superuser,
+            'first_name': obj.first_name,
+            'last_name' : obj.last_name,
             'imageUrl' : image
         } 
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'is_superuser', 'imageUrl')
+        fields = ('username', 'email', 'is_superuser', 'imageUrl', 'first_name', 'last_name')

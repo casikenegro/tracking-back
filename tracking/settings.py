@@ -69,7 +69,7 @@ REST_FRAMEWORK  = {
         'rest_framework_social_oauth2.authentication.SocialAuthentication',
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
-        #'rest_framework.authentication.SessionAuthentication'
+        'rest_framework.authentication.SessionAuthentication'
            # django-oauth- kit de herramientas> = 1.0.0
     ), 
 }
@@ -84,9 +84,9 @@ AUTHENTICATION_BACKENDS = (
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -174,7 +174,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-APPEND_SLASH = False
+APPEND_SLASH = False    
 
 CORS_ORIGIN_ALLOW_ALL = True
 

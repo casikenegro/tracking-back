@@ -89,7 +89,7 @@ class UsersRolesView(viewsets.ModelViewSet):
 
         serializer_response = serializer(query)
 
-        return Response(serializer_response.data)
+        return Response(serializer_response.data, status = status.HTTP_200_OK)
     
 
     
